@@ -234,16 +234,12 @@ void randomEffect(){
           for ( gStairLeds=0; gStairLeds < LEDS_PER_STAIR; gStairLeds++ ){
             leds[gUpDown[gStair + gStairLeds]] = CRGB( 100, 100, 100);
           }
-          //FastLED.show();
-          //FastLED.delay(1);
           show();
         }
         for(gStair=0; gStair <= (NUM_LEDS - LEDS_PER_STAIR); gStair+=LEDS_PER_STAIR) {
           for ( gStairLeds=0; gStairLeds < LEDS_PER_STAIR; gStairLeds++ ){
             leds[gUpDown[gStair + gStairLeds]] = c2;
           }
-          //FastLED.show();
-          //FastLED.delay(1);
           show();
         }
         x = 1;
@@ -354,8 +350,6 @@ void walk() {
       for(b=0; b<255; b++) {
         trans = blend(trans2,c2,b);
         fill_solid(leds, NUM_LEDS, trans);
-        //FastLED.show();
-        //FastLED.delay(8);
         show();
       }
       effectInterval = 8;
@@ -412,7 +406,6 @@ void flicker(){
       gStair = 0;
       x = 0;
       gBright = 0;
-      //effectInterval = 27;
       effectInterval = 5;
       stage = stage_grow;
       break;
@@ -462,8 +455,6 @@ void flicker(){
         for ( gStairLeds=0; gStairLeds < LEDS_PER_STAIR; gStairLeds++ ){
           leds[gUpDown[gStair + gStairLeds]] = CRGB( r,g,0 );
         }
-        //FastLED.show();
-        //FastLED.delay(50);
         show();
       }
       i = 0;
@@ -478,7 +469,6 @@ void flicker(){
         i++;
       } else {
         fill_solid(leds, NUM_LEDS, CRGB( 0, 0, 0 ));
-        //FastLED.show();
         show();
         logln("flicker_stage_off");
         stage = off;
@@ -588,44 +578,27 @@ void update_effect(){
 void welcomeRainbow(){
   for ( int i = 0; i < 500; i++ ){
     rainbowWithGlitter();
-    //FastLED.show();
-    //FastLED.delay(8.3);
     show();
     EVERY_N_MILLISECONDS( 20 ) { gHue++; }
   }
   for (int tick=0; tick < 64; tick++){ 
     for ( uint16_t i = 0; i < NUM_LEDS; i++ ){
       leds[i].fadeToBlackBy( 64 );
-      //FastLED.show();
-      //FastLED.delay(1);
       show();
     }
   }
 }
 
-
-#define colorSaturation 128
-
-RgbColor red(colorSaturation, 0, 0);
-RgbColor green(0, colorSaturation, 0);
-RgbColor blue(0, 0, colorSaturation);
-RgbColor white(colorSaturation);
-RgbColor black(0);
-
 void setup() {
   Serial.begin(115200); // инициализация порта для отладки
   logln("start...");
   strip.Begin();
-  strip.ClearTo(black);
+  strip.ClearTo(RgbColor(0));
   strip.Show();
   delay (3000); // ожидание 3 секунды на загрузку
   randomSeed(millis());
-  //FastLED.addLeds<WS2813, PIN_LED, GRB>(leds, NUM_LEDS); // задаем вид ленты и параметры
-  //FastLED.setMaxPowerInMilliWatts(5000); 
-  //FastLED.setDither( 0 );  // Сброс мигания в анимации
   pinMode(PIN_PIR_DOWN, INPUT);
   pinMode(PIN_PIR_UP, INPUT);
-  //pinMode(13, OUTPUT);
   digitalWrite(PIN_PIR_DOWN, LOW);
   digitalWrite(PIN_PIR_UP, LOW);
   //welcomeRainbow();             // запускаем приветственную радугу - даем время датчикам запуститься
@@ -646,8 +619,6 @@ void loop() {
     // обновляем эффект
     update_effect(); 
     // отображаем на ленте
-    //FastLED.delay(1);
-    //FastLED.show();
     show();
   }
   // если пришло время выключить эффект - выключаем
