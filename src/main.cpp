@@ -1,9 +1,11 @@
 // Основано на https://github.com/dmonty2/ArduinoMotionStairLights
 #include <Arduino.h>
 #include <NeoPixelBus.h>
-// осталось как предыдущая библиотека для работы в лентной, 
+// осталось как предыдущая библиотека для работы в лентой, 
 // теперь используются только некоторые алгоритмы и классы
 #include <FastLED.h>
+#include "sl_wifi.h"
+#include "sl_mqtt.h"
 
 #define NUM_STEPS 22            // Количество ступеней в пролёте
 #define LEDS_PER_STAIR 6       // Количество диодов на ступеньку
@@ -22,9 +24,6 @@ uint16_t gUpDown[NUM_LEDS];     // directional array to walk/loop up or down sta
 int8_t  gupDownDir = 1;         // direction of animation up or down
 CRGB    leds[NUM_LEDS];         // setup leds object to access the string
 CRGBPalette16 gPalette;         // some favorite and random colors for display.
-CRGBPalette16 fade6 =          (CRGB( BRIGHTNESS, 0, 0),       CRGB(BRIGHTNESS,BRIGHTNESS,0), CRGB(0,BRIGHTNESS,0),
-                                CRGB(0,BRIGHTNESS,BRIGHTNESS), CRGB(0,0,BRIGHTNESS),          CRGB(BRIGHTNESS, 0, BRIGHTNESS),
-                                CRGB( BRIGHTNESS, 0, 0));
 CRGBPalette16 z;
 int8_t gLastPalette = 15;       // track last chosen palette.
 unsigned long currentMillis = millis(); // define here so it does not redefine in the loop.
@@ -595,7 +594,6 @@ void setup() {
   strip.Begin();
   strip.ClearTo(RgbColor(0));
   strip.Show();
-  delay (3000); // ожидание 3 секунды на загрузку
   randomSeed(millis());
   pinMode(PIN_PIR_DOWN, INPUT);
   pinMode(PIN_PIR_UP, INPUT);
@@ -606,6 +604,13 @@ void setup() {
   setUpDown(GO_DOWN);           // populate the array index used for stair direction.
   setPalette();                 // setup some favorite & random colors
   stage = off;
+  
+  // настройка WIFI, веб-сервера
+  web_setup();
+  // mqtt
+  mqtt_setup();
+  
+  web_start();
 }
 
 // Основной цикл.
@@ -626,4 +631,9 @@ void loop() {
     stage = stage_init_dim;
     i = 0; r = 0; g = 0; b = 0;
   }
+
+  // webserver
+  web_loop();
+  // mqtt
+  mqtt_loop();
 }
