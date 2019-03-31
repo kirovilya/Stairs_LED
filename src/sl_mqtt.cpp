@@ -12,6 +12,7 @@
 #define AUX_SETTING_URI "/mqtt_setting"
 #define AUX_SAVE_URI    "/mqtt_save"
 #define AUX_CLEAR_URI   "/mqtt_clear"
+#define PREFIX          "/stairs"
 // JSON definition of AutoConnectAux.
 // Multiple AutoConnectAux can be defined in the JSON array.
 // In this example, JSON is hard-coded to make it easier to understand
@@ -151,10 +152,12 @@ bool mqttConnect() {
     return false;
 }
 
-// void mqttPublish(String msg) {
-//     String path = String("channels/") + channelId + String("/publish/") + apiKey;
-//     mqttClient.publish(path.c_str(), msg.c_str());
-// }
+void mqtt_publish(String topic, String value) {
+    if (mqttClient.connected()) {
+        String path = PREFIX + String("/") + topic;
+        mqttClient.publish(path.c_str(), value.c_str());
+    }
+}
 
 int getStrength(uint8_t points) {
   uint8_t sc = points;

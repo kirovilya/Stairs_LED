@@ -128,6 +128,8 @@ void readSensors(){
     previousOffMillis = currentMillis;
     if ( stage == off ){
       logln("Start go down");
+      // сообщим что датчик сработал
+      mqtt_publish("sensor", "up");
       chooseEffects();
       stage = stage_init;
       setUpDown(GO_DOWN);
@@ -141,6 +143,8 @@ void readSensors(){
     previousOffMillis = currentMillis;
     if ( stage == off ){
       logln("Start go up");
+      // сообщим что датчик сработал
+      mqtt_publish("sensor", "down");
       chooseEffects();
       stage = stage_init;
       setUpDown(GO_UP);
@@ -254,6 +258,8 @@ void walk() {
   switch (stage) {
     case stage_init: // инициализация
       logln("walk_stage_init");
+      mqtt_publish("effect", "walk");
+      mqtt_publish("stage", "init");
       topBrightness = 200;
       // Взять два цвета из палитры
       choosePalette();
@@ -332,6 +338,7 @@ void walk() {
       break;
     case stage_init_run: // подготовка к ожиданию подъема
       logln("walk_stage_init_run");
+      mqtt_publish("stage", "run");
       // заполним всю лестницу цветом c2
       fill_solid(leds, NUM_LEDS, c2);
       x = 0;
@@ -345,6 +352,7 @@ void walk() {
       break;
     case stage_init_dim: // подготовка к гашению
       logln("walk_stage_init_dim");
+      mqtt_publish("stage", "fade");
       effectInterval = 3;
       for(b=0; b<255; b++) {
         trans = blend(trans2,c2,b);
@@ -366,6 +374,7 @@ void walk() {
           gBright += 16;
         } else {
           logln("walk_stage_off");
+          mqtt_publish("stage", "off");
           stage = off;
         }
       } else {
@@ -398,6 +407,8 @@ void flicker(){
   switch (stage) {
     case stage_init:
       logln("flicker_stage_init");
+      mqtt_publish("effect", "flicker");
+      mqtt_publish("stage", "init");
       i = 0;
       rnd = 0;
       r = 0; g = 0; b = 0;
@@ -431,6 +442,7 @@ void flicker(){
       }
       break;
     case stage_init_run:
+      mqtt_publish("stage", "run");
       stage = stage_run;
       break;
     case stage_run:
@@ -446,6 +458,7 @@ void flicker(){
       break;
     case stage_init_dim:
       logln("flicker_stage_init_dim");
+      mqtt_publish("stage", "fade");
       // Blow out candles and leave an ember.
       for(gStair=0; gStair <= (NUM_LEDS - LEDS_PER_STAIR); gStair += LEDS_PER_STAIR) {
         rnd = random8(4, 6);
@@ -470,6 +483,7 @@ void flicker(){
         fill_solid(leds, NUM_LEDS, CRGB( 0, 0, 0 ));
         show();
         logln("flicker_stage_off");
+        mqtt_publish("stage", "off");
         stage = off;
       }
       break;
@@ -483,6 +497,8 @@ void fade(){
   switch (stage) {
     case stage_init:
       logln("fade_stage_init");
+      mqtt_publish("effect", "fade");
+      mqtt_publish("stage", "init");
       gBright = 0;
       gStair = 0;
       effectInterval = 5;
@@ -514,6 +530,7 @@ void fade(){
       break;
     case stage_init_run:
       logln("fade_stage_init_run");
+      mqtt_publish("stage", "run");
       v = BRIGHTNESS;
       effectInterval = 70;
       stage = stage_run;
@@ -528,6 +545,7 @@ void fade(){
       break;
     case stage_init_dim:
       logln("fade_stage_init_dim");
+      mqtt_publish("stage", "fade");
       effectInterval = 7;
       h = h - gStair;
       gStair = 0;
@@ -543,6 +561,7 @@ void fade(){
           v = qsub8(v, 16);
         } else {
           logln("fade_stage_off");
+          mqtt_publish("stage", "off");
           stage = off;
         }
       } else {
