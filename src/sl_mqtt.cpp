@@ -1,9 +1,10 @@
 #include <Arduino.h>
-#include <ESP8266WiFi.h>
+#include <WiFi.h>
 #include <FS.h>
 #include <PubSubClient.h>
 #include "sl_mqtt.h"
 #include "sl_wifi.h"
+#include "SPIFFS.h"
 
 #define GET_CHIPID()  (ESP.getChipId())
 
@@ -196,7 +197,9 @@ String loadParams(AutoConnectAux& aux, PageArgument& args) {
 String saveParams(AutoConnectAux& aux, PageArgument& args) {
     // The 'where()' function returns the AutoConnectAux that caused
     // the transition to this page.
-    AutoConnectAux*   mqtt_setting = portal.where();
+    //AutoConnectAux*   mqtt_setting = portal.where();
+    String mqtt_uri = portal.where();
+    AutoConnectAux*   mqtt_setting = portal.aux(mqtt_uri);
 
     AutoConnectInput& mqttserver = mqtt_setting->getElement<AutoConnectInput>("mqttserver");
     serverName = mqttserver.value;

@@ -2,7 +2,7 @@
 
 // веб-сервер
 #define SoftAPName "StairsLED"
-ESP8266WebServer  server(80);
+WebServer  server(80);
 AutoConnect       portal(server);
 AutoConnectConfig config;
 

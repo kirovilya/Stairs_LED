@@ -1,8 +1,8 @@
-#include <ESP8266WiFi.h>
-#include <ESP8266WebServer.h>
+#include <WiFi.h>
+#include <WebServer.h>
 #include <AutoConnect.h>
 
-extern ESP8266WebServer  server;
+extern WebServer         server;
 extern AutoConnect       portal;
 extern AutoConnectConfig config;
 

@@ -12,8 +12,8 @@
 #define NUM_LEDS NUM_STEPS*LEDS_PER_STAIR // Всего диодов на лестнице
 #define BRIGHTNESS 120          // 0...255  ( макс яркость, используется в fade7 )
 //#define PIN_LED D1              // LED Data pin
-#define PIN_PIR_DOWN D5         // PIR Downstairs Pin
-#define PIN_PIR_UP D6           // PIR Upstairs Pin
+#define PIN_PIR_DOWN A0 //D5         // PIR Downstairs Pin
+#define PIN_PIR_UP A3 //D6           // PIR Upstairs Pin
 #define GO_UP -1                // Direction control - Arduino at top of stairs
 #define GO_DOWN 1               // Direction control - Arduino at top of stairs
 uint8_t gHue = 0;               // track color shifts.
@@ -55,7 +55,7 @@ CRGB trans2;
 int upc = 0;
 int downc = 0;
 // лента (пин фиксирован для esp8266 - D4)
-NeoPixelBus<NeoGrbFeature, NeoEsp8266Uart1Ws2813Method> strip(NUM_LEDS);
+NeoPixelBus<NeoGrbFeature, NeoEsp32I2s1Ws2812xMethod> strip(NUM_LEDS, 1);
 
 
 void log(const String &s){
