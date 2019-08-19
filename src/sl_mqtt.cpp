@@ -172,96 +172,96 @@ int getStrength(uint8_t points) {
 
 // Load parameters saved with  saveParams from SPIFFS into the
 // elements defined in /mqtt_setting JSON.
-String loadParams(AutoConnectAux& aux, PageArgument& args) {
-    (void)(args);
-    File param = SPIFFS.open(PARAM_FILE, "r");
-    if (param) {
-        if (aux.loadElement(param))
-            Serial.println(PARAM_FILE " loaded");
-        else
-            Serial.println(PARAM_FILE " failed to load");
-        param.close();
-    }
-    else {
-        Serial.println(PARAM_FILE " open failed");
-    }
-    return String("");
-}
+// String loadParams(AutoConnectAux& aux, PageArgument& args) {
+//     (void)(args);
+//     File param = SPIFFS.open(PARAM_FILE, "r");
+//     if (param) {
+//         if (aux.loadElement(param))
+//             Serial.println(PARAM_FILE " loaded");
+//         else
+//             Serial.println(PARAM_FILE " failed to load");
+//         param.close();
+//     }
+//     else {
+//         Serial.println(PARAM_FILE " open failed");
+//     }
+//     return String("");
+// }
 
 // Save the value of each element entered by '/mqtt_setting' to the
 // parameter file. The saveParams as below is a callback function of
 // /mqtt_save. When invoking this handler, the input value of each
 // element is already stored in '/mqtt_setting'.
 // In Sketch, you can output to stream its elements specified by name.
-String saveParams(AutoConnectAux& aux, PageArgument& args) {
-    // The 'where()' function returns the AutoConnectAux that caused
-    // the transition to this page.
-    AutoConnectAux*   mqtt_setting = portal.where();
+// String saveParams(AutoConnectAux& aux, PageArgument& args) {
+//     // The 'where()' function returns the AutoConnectAux that caused
+//     // the transition to this page.
+//     AutoConnectAux*   mqtt_setting = portal.aux(portal.where());
 
-    AutoConnectInput& mqttserver = mqtt_setting->getElement<AutoConnectInput>("mqttserver");
-    serverName = mqttserver.value;
-    serverName.trim();
+//     AutoConnectInput& mqttserver = mqtt_setting->getElement<AutoConnectInput>("mqttserver");
+//     serverName = mqttserver.value;
+//     serverName.trim();
 
-    AutoConnectInput& portv = mqtt_setting->getElement<AutoConnectInput>("port");
-    port = portv.value;
-    port.trim();
+//     AutoConnectInput& portv = mqtt_setting->getElement<AutoConnectInput>("port");
+//     port = portv.value;
+//     port.trim();
 
-    AutoConnectInput& usernamev = mqtt_setting->getElement<AutoConnectInput>("username");
-    username = usernamev.value;
-    username.trim();
+//     AutoConnectInput& usernamev = mqtt_setting->getElement<AutoConnectInput>("username");
+//     username = usernamev.value;
+//     username.trim();
 
-    AutoConnectInput& userpassv = mqtt_setting->getElement<AutoConnectInput>("userpass");
-    userpass = userpassv.value;
+//     AutoConnectInput& userpassv = mqtt_setting->getElement<AutoConnectInput>("userpass");
+//     userpass = userpassv.value;
 
-    // The entered value is owned by AutoConnectAux of /mqtt_setting.
-    // To retrieve the elements of /mqtt_setting, it is necessary to get
-    // the AutoConnectAux object of /mqtt_setting.
-    File param = SPIFFS.open(PARAM_FILE, "w");
-    mqtt_setting->saveElement(param, { "mqttserver", "port", "username", "userpass" });
-    param.close();
+//     // The entered value is owned by AutoConnectAux of /mqtt_setting.
+//     // To retrieve the elements of /mqtt_setting, it is necessary to get
+//     // the AutoConnectAux object of /mqtt_setting.
+//     File param = SPIFFS.open(PARAM_FILE, "w");
+//     mqtt_setting->saveElement(param, { "mqttserver", "port", "username", "userpass" });
+//     param.close();
 
-    // Echo back saved parameters to AutoConnectAux page.
-    AutoConnectText&  echo = aux.getElement<AutoConnectText>("parameters");
-    echo.value = "Server: " + serverName;
-    echo.value += mqttserver.isValid() ? String(" (OK)") : String(" (ERR)");
-    echo.value += "<br>Port: " + port + "<br>";
-    echo.value += "User name: " + username + "<br>";
-    echo.value += "User pass: " + userpass + "<br>";
+//     // Echo back saved parameters to AutoConnectAux page.
+//     AutoConnectText&  echo = aux.getElement<AutoConnectText>("parameters");
+//     echo.value = "Server: " + serverName;
+//     echo.value += mqttserver.isValid() ? String(" (OK)") : String(" (ERR)");
+//     echo.value += "<br>Port: " + port + "<br>";
+//     echo.value += "User name: " + username + "<br>";
+//     echo.value += "User pass: " + userpass + "<br>";
 
-    return String("");
-}
+//     return String("");
+// }
 
-void mqtt_setup() {
-    SPIFFS.begin();
-    if (portal.load(FPSTR(AUX_mqtt_setting))) {
-        AutoConnectAux* mqtt_setting = portal.aux(AUX_SETTING_URI);
-        PageArgument  args;
-        loadParams(*mqtt_setting, args);
-        AutoConnectInput& mqttserver = mqtt_setting->getElement<AutoConnectInput>("mqttserver");
-        serverName = mqttserver.value;
-        serverName.trim();
+// void mqtt_setup() {
+//     SPIFFS.begin();
+//     if (portal.load(FPSTR(AUX_mqtt_setting))) {
+//         AutoConnectAux* mqtt_setting = portal.aux(AUX_SETTING_URI);
+//         PageArgument  args;
+//         loadParams(*mqtt_setting, args);
+//         AutoConnectInput& mqttserver = mqtt_setting->getElement<AutoConnectInput>("mqttserver");
+//         serverName = mqttserver.value;
+//         serverName.trim();
         
-        AutoConnectInput& portv = mqtt_setting->getElement<AutoConnectInput>("port");
-        port = portv.value;
-        port.trim();
+//         AutoConnectInput& portv = mqtt_setting->getElement<AutoConnectInput>("port");
+//         port = portv.value;
+//         port.trim();
         
-        AutoConnectInput& usernamev = mqtt_setting->getElement<AutoConnectInput>("username");
-        username = usernamev.value;
-        username.trim();
+//         AutoConnectInput& usernamev = mqtt_setting->getElement<AutoConnectInput>("username");
+//         username = usernamev.value;
+//         username.trim();
 
-        AutoConnectInput& userpassv = mqtt_setting->getElement<AutoConnectInput>("userpass");
-        userpass = userpassv.value;
+//         AutoConnectInput& userpassv = mqtt_setting->getElement<AutoConnectInput>("userpass");
+//         userpass = userpassv.value;
 
-        config.bootUri = AC_ONBOOTURI_HOME;
-        config.homeUri = "/";
-        portal.config(config);
+//         config.bootUri = AC_ONBOOTURI_HOME;
+//         config.homeUri = "/";
+//         portal.config(config);
 
-        portal.on(AUX_SETTING_URI, loadParams);
-        portal.on(AUX_SAVE_URI, saveParams);
-    }
-    else
-        Serial.println("load error");
-}
+//         portal.on(AUX_SETTING_URI, loadParams);
+//         portal.on(AUX_SAVE_URI, saveParams);
+//     }
+//     else
+//         Serial.println("load error");
+// }
 
 void mqtt_loop() {
     if (!mqttClient.connected()) {
